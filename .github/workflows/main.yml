@@ -1,0 +1,37 @@
+name: Push Code Pipeline
+
+on:
+  push:
+    branches:
+      - main  # You can specify any branch like 'develop', 'master', etc.
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2  # This checks out your code from the repository
+
+    - name: Set up Node.js (if using Node.js)
+      uses: actions/setup-node@v3
+      with:
+        node-version: '14'  # Adjust based on your node version requirement
+
+    - name: Install dependencies
+      run: |
+        npm install  # Adjust depending on your package manager (e.g., yarn, pip, etc.)
+
+    - name: Run tests (Optional)
+      run: |
+        npm test  # Run tests or any other commands for validation before pushing
+
+    - name: Push changes to the repository
+      run: |
+        git config --global user.name "Your GitHub Username"
+        git config --global user.email "youremail@example.com"
+        git add .  # Add any changes you want to push
+        git commit -m "Automated commit message"  # Commit your changes
+        git push origin main  # Push to the main branch
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub token for authorization (automatically provided)
